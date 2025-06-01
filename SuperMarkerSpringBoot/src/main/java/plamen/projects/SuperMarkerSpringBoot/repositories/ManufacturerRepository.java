@@ -6,6 +6,7 @@ import plamen.projects.SuperMarkerSpringBoot.beans.Manufacturer;
 
 public interface ManufacturerRepository extends JpaRepository<Manufacturer, Integer>{
 
-	boolean existsByName(String name);
+
+	boolean exists(Manufacturer manufacturer);
 
 }

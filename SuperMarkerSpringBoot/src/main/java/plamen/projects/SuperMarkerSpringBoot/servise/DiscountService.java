@@ -8,11 +8,11 @@ import plamen.projects.SuperMarkerSpringBoot.beans.Discount;
 import plamen.projects.SuperMarkerSpringBoot.repositories.DiscountRepository;
 
 @Service
-public class DiscountServices {
+public class DiscountService {
 
 	public final DiscountRepository discountRepository;
 	
-	public DiscountServices(DiscountRepository discountRepository) {
+	public DiscountService(DiscountRepository discountRepository) {
 		super();
 		this.discountRepository = discountRepository;
 	}
@@ -23,7 +23,8 @@ public class DiscountServices {
 	}
 	
 	public Discount findById(Integer id) {
-		return discountRepository.findById(id).orElse(null);
+		return discountRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Discount with id %d not found".formatted(id)));
 	}
 	
 	public void create(Discount discount) {
@@ -49,10 +50,14 @@ public class DiscountServices {
 		discountRepository.save(discount);
 	}
 	
-	public void delete(Integer id) {
-		if (!discountRepository.existsById(id)) {
+	public void delete(Discount discount) {
+		if (!discountRepository.existsById(discount.getId())) {
 			throw new IllegalArgumentException("Discount with given ID does not exist.");
 		}
-		discountRepository.deleteById(id);
+		discountRepository.deleteById(discount.getId());
+	}
+	
+	public boolean exists(Discount discount) {
+		return discountRepository.exists(discount);
 	}
 }

@@ -1,8 +1,11 @@
 package plamen.projects.SuperMarkerSpringBoot.servise;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import plamen.projects.SuperMarkerSpringBoot.beans.Manufacturer;
 import plamen.projects.SuperMarkerSpringBoot.repositories.ManufacturerRepository;
@@ -27,7 +30,8 @@ public class ManufacturerService {
 
 	public Manufacturer findById(Integer id) {
 		return manufacturerRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Manufacturer not found"));
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
+						"Manufacturer with id %d not found".formatted(id)));
 	}
 	
 	public void update(Manufacturer manufacturer) {
@@ -37,10 +41,10 @@ public class ManufacturerService {
 		manufacturerRepository.save(manufacturer);
 	}
 	
-	public void delete(Integer id) {
-		if (!manufacturerRepository.existsById(id)) {
+	public void delete(Manufacturer manufacturer) {
+		if (!manufacturerRepository.exists(manufacturer)) {
 			throw new IllegalArgumentException("Manufacturer with given ID does not exist.");
 		}
-		manufacturerRepository.deleteById(id);
+		manufacturerRepository.delete(manufacturer);
 	}
 }

@@ -16,33 +16,28 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
-import plamen.projects.SuperMarkerSpringBoot.beans.Discount;
-import plamen.projects.SuperMarkerSpringBoot.beans.Manufacturer;
 import plamen.projects.SuperMarkerSpringBoot.beans.Product;
-import plamen.projects.SuperMarkerSpringBoot.repositories.DiscountRepository;
-import plamen.projects.SuperMarkerSpringBoot.repositories.ProductRepository;
+import plamen.projects.SuperMarkerSpringBoot.servise.ProductService;
 
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
 
-	public final ProductRepository productRepository;
-	public final DiscountRepository discountRepository;
+	private final ProductService productService;
 
-	public ProductController(ProductRepository productRepository, DiscountRepository discountRepository) {
+	public ProductController(ProductService productService) {
 		super();
-		this.productRepository = productRepository;
-		this.discountRepository = discountRepository;
+		this.productService = productService;
 	}
 
 	@GetMapping()
 	public List<Product> findAll() {
-		return productRepository.findAll();
+		return productService.findAll();
 	}
 	
 	@GetMapping("/{id}")
 	public Product findById(@PathVariable Integer id) {
-		Optional<Product> product = productRepository.findById(id);
+		Optional<Product> product = productService.findById(id);
 		if( product.isEmpty())
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manufacturer with id %d not found".formatted(id));
 		return product.get();
@@ -51,22 +46,19 @@ public class ProductController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void create(@Valid @RequestBody Product manufacturer) {
-		productRepository.save(manufacturer);
+		productService.create(manufacturer);
 	}
 	
 	@PutMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public Product update(@Valid @RequestBody Product product) {
-		Optional<Discount> discount = discountRepository.findById(product.getDiscount().getId());
-		System.out.println(discount.toString());
-		if(discount.isEmpty())discountRepository.save(product.getDiscount());
-		return productRepository.save(product);
+	public void update(@Valid @RequestBody Product product) {
+		productService.update(product);
 	}
 	
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@RequestBody Product manufacturer) {
-		productRepository.delete(manufacturer);
+		productService.delete(manufacturer);
 	}
 	
 }

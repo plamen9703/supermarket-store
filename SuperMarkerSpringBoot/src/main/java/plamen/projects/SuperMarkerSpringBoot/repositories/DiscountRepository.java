@@ -10,4 +10,6 @@ import plamen.projects.SuperMarkerSpringBoot.beans.Discount;
 @Repository
 public interface DiscountRepository extends JpaRepository<Discount, Integer>{
 	Optional<Discount> findById(Integer id);
+
+	boolean exists(Discount discount);
 }

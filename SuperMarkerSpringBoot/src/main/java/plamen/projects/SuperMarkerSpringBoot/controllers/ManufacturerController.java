@@ -18,45 +18,43 @@ import org.springframework.web.server.ResponseStatusException;
 import jakarta.validation.Valid;
 import plamen.projects.SuperMarkerSpringBoot.beans.Manufacturer;
 import plamen.projects.SuperMarkerSpringBoot.repositories.ManufacturerRepository;
+import plamen.projects.SuperMarkerSpringBoot.servise.ManufacturerService;
 
 @RestController
 @RequestMapping("/api/manufacturer")
 public class ManufacturerController {
-	private final ManufacturerRepository manufacturerRepository;
+	private final ManufacturerService manufacturerService;
 
-	public ManufacturerController(ManufacturerRepository manufacturerRepository) {
+	public ManufacturerController(ManufacturerService manufacturerService) {
 		super();
-		this.manufacturerRepository = manufacturerRepository;
+		this.manufacturerService = manufacturerService;
 	}
 	
 	@GetMapping()
 	public List<Manufacturer> findAll() {
-		return manufacturerRepository.findAll();
+		return manufacturerService.findAll();
 	}
 	
 	@GetMapping("/{id}")
 	public Manufacturer findById(@PathVariable Integer id) {
-		Optional<Manufacturer> manufacturer = manufacturerRepository.findById(id);
-		if( manufacturer.isEmpty())
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Manufacturer with id %d not found".formatted(id));
-		return manufacturer.get();
+		return manufacturerService.findById(id);
 	}
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void create(@Valid @RequestBody Manufacturer manufacturer) {
-		manufacturerRepository.save(manufacturer);
+		manufacturerService.create(manufacturer);
 	}
 	
 	@PutMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void update(@Valid @RequestBody Manufacturer manufacturer) {
-		manufacturerRepository.save(manufacturer);
+		manufacturerService.update(manufacturer);
 	}
 	
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void delete(@RequestBody Manufacturer manufacturer) {
-		manufacturerRepository.delete(manufacturer);
+		manufacturerService.delete(manufacturer);
 	}
 }
