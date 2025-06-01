@@ -8,11 +8,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import plamen.projects.SuperMarkerSpringBoot.beans.valudations.ValidDateRange;
 @Entity
 @Table
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@ValidDateRange
+//@ValidDateRange
 public class Discount {
 	@Id
 	private Integer id;

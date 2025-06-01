@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
+import plamen.projects.SuperMarkerSpringBoot.beans.Discount;
 import plamen.projects.SuperMarkerSpringBoot.beans.Manufacturer;
 import plamen.projects.SuperMarkerSpringBoot.beans.Product;
+import plamen.projects.SuperMarkerSpringBoot.repositories.DiscountRepository;
 import plamen.projects.SuperMarkerSpringBoot.repositories.ProductRepository;
 
 @RestController
@@ -25,12 +27,14 @@ import plamen.projects.SuperMarkerSpringBoot.repositories.ProductRepository;
 public class ProductController {
 
 	public final ProductRepository productRepository;
+	public final DiscountRepository discountRepository;
 
-	public ProductController(ProductRepository productRepository) {
+	public ProductController(ProductRepository productRepository, DiscountRepository discountRepository) {
 		super();
 		this.productRepository = productRepository;
+		this.discountRepository = discountRepository;
 	}
-	
+
 	@GetMapping()
 	public List<Product> findAll() {
 		return productRepository.findAll();
@@ -52,8 +56,11 @@ public class ProductController {
 	
 	@PutMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void update(@Valid @RequestBody Product manufacturer) {
-		productRepository.save(manufacturer);
+	public Product update(@Valid @RequestBody Product product) {
+		Optional<Discount> discount = discountRepository.findById(product.getDiscount().getId());
+		System.out.println(discount.toString());
+		if(discount.isEmpty())discountRepository.save(product.getDiscount());
+		return productRepository.save(product);
 	}
 	
 	@DeleteMapping
